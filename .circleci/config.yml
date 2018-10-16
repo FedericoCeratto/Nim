@@ -1,0 +1,39 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: nimlang/nim
+    steps:
+      - run: echo 'export PATH=~/.nimble/bin:$PATH' >> $BASH_ENV
+      - checkout
+      - run:
+          command: |
+            apt-get update
+            apt-get install -y --no-install-recommends libcurl4-openssl-dev \
+              libsdl1.2-dev libgc-dev libsfml-dev
+      - run:
+          command: make circleci
+      - run: nim c koch
+      - run: ./koch boot
+      - run: ./koch boot -d:release
+      - run: ./koch nimble
+      - run: nim e tests/test_nimscript.nims
+      #-run:  nimble install zip -y
+      #-run:  nimble install opengl
+      #-run:  nimble install sdl1
+      #-run:  nimble install jester@#head -y
+      #-run:  nimble install niminst
+      - run: nim c --taintMode:on -d:nimCoroutines testament/tester
+      - run: testament/tester --pedantic all -d:nimCoroutines
+      - run: nim c -o:bin/nimpretty nimpretty/nimpretty.nim
+      - run: nim c -r nimpretty/tester.nim
+      - run: ./koch docs --git.commit:devel
+      - run: ./koch csource
+      - run: ./koch nimsuggest
+      - run: nim c -r nimsuggest/tester
+      - run: nim c -r nimdoc/tester
+      - store_artifacts:
+          path: test-reports/
+          destination: tr1
+      - store_test_results:
+          path: test-reports/
