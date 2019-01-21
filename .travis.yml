@@ -36,6 +36,8 @@ before_script:
   - set -e
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then unset -f cd; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then shell_session_update() { :; }; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then wget http://security.debian.org/debian-security/pool/updates/main/o/openssl/libssl1.1_1.1.0j-1~deb9u1_amd64.deb; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo dpkg -i libssl1.1_1.1.0j-1~deb9u1_amd64.deb; fi
   - git clone --depth 1 https://github.com/nim-lang/csources.git
   - cd csources
   - sh build.sh
