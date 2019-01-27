@@ -42,10 +42,10 @@ proc execFold*(desc, cmd: string, errorcode: int = QuitFailure, additionalPath =
   ## Execute shell command. Add log folding on Travis CI.
   # https://github.com/travis-ci/travis-ci/issues/2285#issuecomment-42724719
   if existsEnv("TRAVIS"):
-    echo "travis_fold:start:" & desc.replace(" ", "")
+    echo "travis_fold:start:" & desc.replace(" ", "⠀")
   exec(cmd, errorcode, additionalPath)
   if existsEnv("TRAVIS"):
-    echo "travis_fold:end:" & desc.replace(" ", "")
+    echo "travis_fold:end:" & desc.replace(" ", "⠀")
 
 proc execCleanPath*(cmd: string,
                    additionalPath = ""; errorcode: int = QuitFailure) =
